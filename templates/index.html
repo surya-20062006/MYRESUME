@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to bottom right, #d0f0ff, #ffffff);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 1s ease-in-out;
+  }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .home-container {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 50px 40px;
+    border-radius: 20px;
+    box-shadow: 0 8px 24px rgba(0, 123, 255, 0.1);
+    text-align: center;
+    width: 90%;
+    max-width: 600px;
+  }
+
+  .home-container h1 {
+    font-size: 2.4rem;
+    color: #007bff;
+    margin-bottom: 20px;
+  }
+
+  .home-container p {
+    font-size: 1.1rem;
+    color: #444;
+    margin-bottom: 30px;
+  }
+
+  .home-container a {
+    display: inline-block;
+    padding: 12px 24px;
+    margin: 10px;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: 0.3s ease;
+  }
+
+  .home-container a:hover {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+  }
+</style>
+
+<div class="home-container">
+  <h1>Welcome to ResumeXpert 💼</h1>
+  <p>Your intelligent resume screening & analysis tool</p>
+  <a href="/login">Login</a>
+  <a href="/signup">Sign Up</a>
+</div>
+{% endblock %}

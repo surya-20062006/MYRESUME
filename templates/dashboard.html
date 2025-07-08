@@ -1,0 +1,219 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to bottom right, #d0f0ff, #ffffff);
+    min-height: 100vh;
+    padding: 60px 20px 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: fadeIn 1s ease-in-out;
+    color: #333;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h2 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #007bff;
+  }
+
+  .slide-card {
+    position: absolute;
+    top: 190px; /* moved slightly down */
+    width: 100%;
+    max-width: 500px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 30px 20px;
+    box-shadow: 0 10px 25px rgba(0, 123, 255, 0.15);
+    text-align: center;
+    transition: all 0.5s ease;
+    opacity: 0;
+    transform: translateX(100%);
+    display: none;
+  }
+
+  .slide-card.active {
+    display: block;
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .slide-card.slide-out-left {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  .slide-card.slide-out-right {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+
+  .slide-card h3 {
+    font-size: 1.4rem;
+    margin-bottom: 10px;
+    color: #007bff;
+  }
+
+  .slide-card p {
+    font-size: 0.95rem;
+    margin-bottom: 18px;
+    color: #555;
+  }
+
+  .slide-card a,
+  .slide-card button {
+    padding: 10px 18px;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.3s ease;
+  }
+
+  .slide-card a:hover,
+  .slide-card button:hover {
+    transform: scale(1.03);
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+  }
+
+  .nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 340px; /* moved buttons slightly down */
+    width: 100%;
+    max-width: 500px;
+  }
+
+  .nav-buttons button {
+    padding: 10px 22px;
+    font-size: 0.95rem;
+    border-radius: 10px;
+    background: #007bff;
+    border: none;
+    color: white;
+    font-weight: 600;
+    transition: background 0.3s, transform 0.3s;
+  }
+
+  .nav-buttons button:hover {
+    background: #0056d2;
+    transform: scale(1.05);
+  }
+
+  .logout {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: transparent;
+    border: 2px solid #007bff;
+    color: #007bff;
+    padding: 10px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    transition: 0.3s;
+    font-weight: bold;
+  }
+
+  .logout:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+  }
+</style>
+
+<h2>🚀 ResumeXpert Dashboard</h2>
+
+<!-- Step Cards -->
+<div class="slide-card" id="step0">
+  <h3>📤 Analyze Resume</h3>
+  <p>Upload resume and job description to check match score.</p>
+  <form action="/analyze" method="POST" enctype="multipart/form-data">
+    <input type="file" name="resume" required><br><br>
+    <input type="file" name="jd" required><br><br>
+    <button type="submit">Analyze</button>
+  </form>
+</div>
+
+<div class="slide-card" id="step1">
+  <h3>📝 Resume Builder</h3>
+  <p>Create a custom resume with a professional layout.</p>
+  <a href="/builder">Start Building</a>
+</div>
+
+<div class="slide-card" id="step2">
+  <h3>🎨 Template Gallery</h3>
+  <p>Explore stylish resume templates to download.</p>
+  <a href="/templates">View Templates</a>
+</div>
+
+<div class="slide-card" id="step3">
+  <h3>📁 Download Result</h3>
+  <p>Get your last match summary as a file.</p>
+  <a href="/download_summary?score=90">Download Summary</a>
+</div>
+
+<!-- Navigation -->
+<div class="nav-buttons">
+  <button onclick="prevStep()">⬅ Back</button>
+  <button onclick="nextStep()">Next ➡</button>
+</div>
+
+<a href="/logout" class="logout">🔙 Logout</a>
+
+<!-- Slide Logic -->
+<script>
+  let currentStep = 0;
+  const totalSteps = 4;
+
+  function showStep(index) {
+    for (let i = 0; i < totalSteps; i++) {
+      const card = document.getElementById("step" + i);
+      card.classList.remove("active", "slide-out-left", "slide-out-right");
+      card.style.display = "none";
+    }
+
+    const currentCard = document.getElementById("step" + index);
+    currentCard.style.display = "block";
+    void currentCard.offsetWidth; // force reflow
+    currentCard.classList.add("active");
+  }
+
+  function nextStep() {
+    if (currentStep < totalSteps - 1) {
+      const outgoingCard = document.getElementById("step" + currentStep);
+      outgoingCard.classList.add("slide-out-left");
+      setTimeout(() => {
+        currentStep++;
+        showStep(currentStep);
+      }, 300);
+    }
+  }
+
+  function prevStep() {
+    if (currentStep > 0) {
+      const outgoingCard = document.getElementById("step" + currentStep);
+      outgoingCard.classList.add("slide-out-right");
+      setTimeout(() => {
+        currentStep--;
+        showStep(currentStep);
+      }, 300);
+    }
+  }
+
+  window.onload = () => showStep(currentStep);
+</script>
+
+{% endblock %}

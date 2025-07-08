@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ResumeXpert</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="{{ url_for('static', filename='images/favicon.png') }}">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Poppins', sans-serif;
+      scroll-behavior: smooth;
+      background: #f0f4ff;
+      padding-top: 100px; /* to push content below fixed header */
+    }
+
+    body.fade {
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* 🔝 Sticky Header */
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 40px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      z-index: 99;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #007bff;
+    }
+
+    /* 👤 Profile + Dropdown */
+    .profile-badge {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .profile-pic {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: url('https://cdn-icons-png.flaticon.com/512/847/847969.png') center center/cover no-repeat;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    .profile-name {
+      font-weight: 600;
+      color: #007bff;
+    }
+
+    .dropdown {
+      position: absolute;
+      top: 50px;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+      padding: 10px 0;
+      display: none;
+      min-width: 160px;
+      z-index: 1000;
+    }
+
+    .dropdown a {
+      display: block;
+      padding: 10px 20px;
+      color: #333;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+
+    .dropdown a:hover {
+      background: #f0f4ff;
+      color: #007bff;
+    }
+
+    .profile-badge.active .dropdown {
+      display: block;
+    }
+
+    /* 🔄 Main Page Content */
+    main {
+      padding: 20px 30px;
+    }
+
+    /* 🔼 Back to Top */
+    #backToTop {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: linear-gradient(to right, #4facfe, #00f2fe);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+      cursor: pointer;
+      display: none;
+      z-index: 999;
+    }
+
+    #backToTop:hover {
+      transform: scale(1.05);
+    }
+
+    /* 🔃 Loader */
+    #loader {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    #loader.hidden {
+      display: none;
+    }
+
+    /* 🔄 Responsive */
+    @media screen and (max-width: 480px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 15px 20px;
+      }
+
+      .profile-name {
+        font-size: 0.9rem;
+      }
+
+      .dropdown {
+        right: 0;
+        left: auto;
+      }
+    }
+  </style>
+</head>
+
+<body class="fade">
+
+  <!-- Loader (optional) -->
+  <div id="loader">
+    <img src="{{ url_for('static', filename='images/logo.png') }}" width="90" alt="Loading...">
+  </div>
+
+  <!-- 🔝 Sticky Header -->
+  <header>
+    <h1>💼 ResumeXpert</h1>
+    {% if session.user %}
+    <div class="profile-badge" onclick="toggleDropdown()">
+      <div class="profile-pic"></div>
+      <div class="profile-name">{{ session.user }}</div>
+      <div class="dropdown" id="profileDropdown">
+        <a href="/profile">👤 View Profile</a>
+        <a href="/dashboard">📊 Dashboard</a>
+        <a href="/logout">🚪 Logout</a>
+      </div>
+    </div>
+    {% endif %}
+  </header>
+
+  <!-- 🔽 Main Dynamic Content -->
+  <main>
+    {% block content %}
+    {% endblock %}
+  </main>
+
+  <!-- 🔼 Back to Top -->
+  <div id="backToTop" onclick="scrollToTop()">⬆ Top</div>
+
+  <!-- 🔧 JS -->
+  <script>
+    // Loader remove
+    window.addEventListener("load", () => {
+      document.getElementById("loader").classList.add("hidden");
+    });
+
+    // Profile dropdown
+    function toggleDropdown() {
+      document.querySelector('.profile-badge').classList.toggle('active');
+    }
+
+    window.addEventListener('click', function (e) {
+      const badge = document.querySelector('.profile-badge');
+      if (badge && !badge.contains(e.target)) {
+        badge.classList.remove('active');
+      }
+    });
+
+    // Scroll up button
+    window.onscroll = function () {
+      const btn = document.getElementById("backToTop");
+      btn.style.display = (window.scrollY > 300) ? "block" : "none";
+    };
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  </script>
+
+</body>
+</html>

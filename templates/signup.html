@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(to bottom right, #d0f0ff, #ffffff);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 1s ease-in;
+  }
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  .auth-container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 50px 40px;
+    box-shadow: 0 8px 32px rgba(0, 123, 255, 0.2);
+    width: 100%;
+    max-width: 450px;
+    color: #333;
+    text-align: center;
+    animation: slideUp 1s ease-out;
+  }
+
+  @keyframes slideUp {
+    0% { transform: translateY(30px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  .auth-container h2 {
+    font-size: 2rem;
+    margin-bottom: 25px;
+    font-weight: 600;
+    color: #007bff;
+  }
+
+  .auth-container input {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 15px;
+    border: 1px solid #bce0fd;
+    border-radius: 10px;
+    background: #f8fbff;
+    color: #333;
+    font-size: 1rem;
+    outline: none;
+    transition: 0.3s;
+  }
+
+  .auth-container input::placeholder {
+    color: #888;
+  }
+
+  .auth-container input:focus {
+    background: #eaf6ff;
+    border-color: #007bff;
+  }
+
+  .auth-container button {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  .auth-container button:hover {
+    background: linear-gradient(to right, #00c6ff, #0072ff);
+  }
+
+  .auth-container p {
+    margin-top: 20px;
+    font-size: 0.95rem;
+    color: #555;
+  }
+
+  .auth-container a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+  }
+
+  .auth-container a:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<div class="auth-container">
+  <h2>📝 Sign Up for ResumeXpert</h2>
+  <form method="POST">
+    <input type="text" name="name" placeholder="Full Name" required>
+    <input type="email" name="email" placeholder="Email Address" required>
+    <input type="password" name="password" placeholder="Create Password" required>
+    <button type="submit">Create Account</button>
+  </form>
+  <p>Already have an account? <a href="/login">Login here</a></p>
+</div>
+{% endblock %}
